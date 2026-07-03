@@ -201,16 +201,18 @@ def recommend():
 
     anchor = df.loc[anchor_idx]
     
-    # 2. FAST BEHAVIORAL SCORING
+    # 2. FAST BEHAVIORAL SCORING (Unsupervised KNN Search using Cosine Similarity)
+    # Perform a K-Nearest Neighbors lookup to find the top K=500 nearest products.
+    # We calculate the cosine similarity (since vectors are L2-normalized, the dot product equals the cosine similarity).
     anchor_svd_vec = item_svd_matrix[anchor_idx]
     all_svd_sims = np.dot(item_svd_matrix, anchor_svd_vec)
     
-    # Top 500 behavioral matches
+    # Retrieve the indices of the Top-K (500) nearest neighbors (K-Neighbor Nearest System)
     top_indices = np.argsort(all_svd_sims)[-500:][::-1]
     recs = df.iloc[top_indices].copy()
     recs['svd_sim'] = all_svd_sims[top_indices]
     
-    # TF-IDF similarities relative to anchor
+    # Compute TF-IDF text similarities relative to the anchor for these K-Nearest Neighbors
     anchor_tfidf_vec = tfidf_matrix[anchor_idx]
     recs['tfidf_sim'] = tfidf_matrix[top_indices].dot(anchor_tfidf_vec.T).toarray().flatten()
 

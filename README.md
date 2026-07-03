@@ -1,7 +1,7 @@
-# E-Commerce Product Recommendation System
+# E-Commerce Product Recommendation System using K-Neighbor Nearest Algorithm
 
 ## 1. Project Overview
-The project is a hybrid E-Commerce Product Recommendation System designed to accurately predict and recommend relevant products to a user based on their active browsing or search queries. It operates on a comprehensive Amazon dataset comprising products, prices, ratings, and categories. The backend logic is powered by Python and Flask, seamlessly delivering high-performance, real-time tiered recommendations to a modern frontend interface.
+The project is a hybrid E-Commerce Product Recommendation System using the K-Neighbor Nearest (KNN) algorithm designed to accurately predict and recommend relevant products to a user based on their active browsing or search queries. It operates on a comprehensive Amazon dataset comprising products, prices, ratings, and categories. The backend logic is powered by Python and Flask, seamlessly delivering high-performance, real-time tiered recommendations to a modern frontend interface.
 
 The system leverages Machine Learning techniques to surface:
 - **Substitute Products** (Exact or very similar items)
