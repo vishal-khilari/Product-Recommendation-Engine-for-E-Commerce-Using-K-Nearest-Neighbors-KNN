@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>RecoEngine AI Dashboard</title>
+    <!-- Tailwind via CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet" />
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <!-- FontAwesome for Icons (kept for compatibility with old icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Tailwind Config from Stitch -->
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#ffdbcc", "inverse-on-surface": "#f3effc", "on-secondary-fixed": "#191c1d",
+                        "on-primary-fixed-variant": "#3323cc", "on-tertiary-fixed-variant": "#7b2f00", "on-error-container": "#93000a",
+                        "error": "#ba1a1a", "secondary-fixed-dim": "#c5c7c8", "on-tertiary-container": "#ffd2be",
+                        "on-error": "#ffffff", "on-surface-variant": "#464555", "on-primary-fixed": "#0f0069",
+                        "tertiary-container": "#a44100", "surface-tint": "#4d44e3", "on-primary-container": "#dad7ff",
+                        "inverse-primary": "#c3c0ff", "on-secondary-container": "#626566", "tertiary-fixed-dim": "#ffb695",
+                        "surface-container-lowest": "#ffffff", "on-background": "#1b1b24", "on-tertiary": "#ffffff",
+                        "outline-variant": "#c7c4d8", "on-secondary": "#ffffff", "on-surface": "#1b1b24",
+                        "secondary-container": "#e1e3e4", "on-primary": "#ffffff", "surface-container": "#f0ecf9",
+                        "outline": "#777587", "surface-bright": "#fcf8ff", "secondary-fixed": "#e1e3e4",
+                        "primary-container": "#4f46e5", "inverse-surface": "#302f39", "surface-container-highest": "#e4e1ee",
+                        "surface-variant": "#e4e1ee", "surface-container-high": "#eae6f4", "primary": "#3525cd",
+                        "secondary": "#5c5f60", "surface": "#fcf8ff", "error-container": "#ffdad6",
+                        "primary-fixed-dim": "#c3c0ff", "background": "#fcf8ff", "tertiary": "#7e3000",
+                        "primary-fixed": "#e2dfff", "surface-dim": "#dcd8e5", "on-tertiary-fixed": "#351000",
+                        "on-secondary-fixed-variant": "#454748", "surface-container-low": "#f5f2ff"
+                    },
+                    "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                    "spacing": { "xxl": "48px", "xs": "4px", "sm": "8px", "xl": "32px", "base": "4px", "container-margin": "32px", "md": "16px", "gutter": "24px", "lg": "24px" },
+                    "fontFamily": {
+                        "body-lg": ["Inter"], "h3": ["Plus Jakarta Sans"], "body-sm": ["Inter"], "h1": ["Plus Jakarta Sans"],
+                        "h2": ["Plus Jakarta Sans"], "h4": ["Plus Jakarta Sans"], "label-md": ["Inter"], "body-md": ["Inter"], "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "h3": ["24px", { "lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "h1": ["36px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "h2": ["30px", { "lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "h4": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "1", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-background text-on-background min-h-screen">
+    <!-- Header -->
+    <header
+        class="sticky top-0 w-full z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200/50 shadow-sm flex items-center justify-between px-8 h-16 transition-all duration-300 ease-in-out">
+        <div class="flex items-center gap-gutter">
+            <span class="text-xl font-bold tracking-tight text-primary">RecoEngine</span>
+            <nav class="hidden md:flex gap-md items-center">
+                <a id="navDashboard"
+                    class="nav-link active font-label-md text-label-md text-primary-container border-b-2 border-primary-container pb-1 cursor-pointer">Dashboard</a>
+                <a id="navCampaigns"
+                    class="nav-link font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors px-2 py-1 rounded cursor-pointer">Campaigns</a>
+                <a id="navInsights"
+                    class="nav-link font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors px-2 py-1 rounded cursor-pointer">Insights</a>
+                <button id="openAiModalBtn"
+                    class="font-label-md text-label-md text-primary bg-primary-container/10 hover:bg-primary-container/20 border border-primary-container/30 transition-colors px-3 py-1.5 rounded-lg flex items-center gap-1 cursor-pointer">
+                    <span class="material-symbols-outlined text-[16px]">auto_awesome</span> AI Builder
+                </button>
+            </nav>
+        </div>
+        <div class="flex items-center gap-md">
+            <div
+                class="hidden md:flex items-center bg-surface-container px-3 py-1.5 rounded-full border border-outline-variant">
+                <span class="font-label-sm text-label-sm text-on-surface-variant">Amazon Dataset · 1.4M Products</span>
+            </div>
+            <button class="text-on-surface-variant hover:text-primary transition-colors">
+                <span class="material-symbols-outlined">notifications</span>
+            </button>
+            <button class="text-on-surface-variant hover:text-primary transition-colors">
+                <span class="material-symbols-outlined">account_circle</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-[1440px] mx-auto px-8 py-xxl flex flex-col gap-xxl">
+        <!-- Section 1 (Hero) -->
+        <section class="grid grid-cols-12 gap-gutter items-center">
+            <div class="col-span-12 lg:col-span-7 flex flex-col gap-lg">
+                <div class="flex gap-sm flex-wrap">
+                    <span
+                        class="inline-flex items-center px-3 py-1 rounded-full bg-primary-container/10 text-primary-container font-label-sm text-label-sm">
+                        <span class="material-symbols-outlined text-[14px] mr-1">database</span> 1.4 Million Products
+                        Analyzed
+                    </span>
+                    <span
+                        class="inline-flex items-center px-3 py-1 rounded-full bg-tertiary-container/10 text-tertiary-container font-label-sm text-label-sm">
+                        <span class="material-symbols-outlined text-[14px] mr-1">layers</span> 3 Recommendation Tiers
+                    </span>
+                </div>
+                <h1 class="font-h1 text-h1 text-on-surface animate-pop-in">Discover Products Users Actually Want</h1>
+                <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl animate-fade-up">
+                    Our advanced ML models process extensive e-commerce datasets to generate highly accurate, tiered
+                    product recommendations.
+                </p>
+                <div class="flex gap-md pt-sm animate-fade-up delay-1">
+                    <div
+                        class="flex items-center gap-xs px-4 py-2 bg-surface-container rounded-lg border border-outline-variant">
+                        <span class="material-symbols-outlined text-primary">text_snippet</span>
+                        <span class="font-label-md text-label-md text-on-surface">Content-Based</span>
+                    </div>
+                    <div
+                        class="flex items-center gap-xs px-4 py-2 bg-surface-container rounded-lg border border-outline-variant">
+                        <span class="material-symbols-outlined text-tertiary-container">group</span>
+                        <span class="font-label-md text-label-md text-on-surface">Collaborative</span>
+                    </div>
+                    <div
+                        class="flex items-center gap-xs px-4 py-2 bg-primary-container/10 border-primary-container/30 rounded-lg border">
+                        <span class="material-symbols-outlined text-primary">join_inner</span>
+                        <span class="font-label-md text-label-md text-primary">Hybrid Focus</span>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Section 2 (Search) -->
+        <section
+            class="bg-surface-container-lowest rounded-xl p-lg shadow-[0px_4px_20px_rgba(0,0,0,0.03)] border border-outline-variant animate-fade-up delay-2">
+            <div class="flex flex-col md:flex-row gap-md items-center">
+                <select id="categorySelect"
+                    class="w-full md:w-1/4 px-4 py-3 rounded-lg border border-outline-variant bg-surface-bright font-body-md text-body-md text-on-surface focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all outline-none cursor-pointer">
+                    <option value="">All Categories</option>
+                </select>
+                <div class="relative flex-1 w-full">
+                    <span
+                        class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+                    <input id="searchInput"
+                        class="w-full pl-12 pr-4 py-3 rounded-lg border border-outline-variant bg-surface-bright font-body-md text-body-md text-on-surface focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all outline-none"
+                        placeholder="Search for a product (e.g., Wayona USB Cable)..." type="text" autocomplete="off" />
+                </div>
+                <button id="searchBtn"
+                    class="w-full md:w-auto bg-primary-container text-on-primary hover:bg-primary px-6 py-3 rounded-lg font-label-md text-label-md flex items-center justify-center gap-xs shadow-[0px_4px_20px_rgba(0,0,0,0.03)] transition-colors cursor-pointer">
+                    Analyze <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                </button>
+            </div>
+            <div class="mt-md flex flex-wrap gap-sm items-center">
+                <span class="font-label-sm text-label-sm text-on-surface-variant">Quick Test:</span>
+                <button
+                    class="sample-chip px-3 py-1.5 rounded-full bg-surface-container text-on-surface-variant border border-outline-variant font-label-sm text-label-sm hover:bg-surface-container-high transition-colors"
+                    data-product="Wayona USB Cable">Wayona USB Cable</button>
+                <button
+                    class="sample-chip px-3 py-1.5 rounded-full bg-surface-container text-on-surface-variant border border-outline-variant font-label-sm text-label-sm hover:bg-surface-container-high transition-colors"
+                    data-product="boAt Cable">boAt Cable</button>
+                <button
+                    class="sample-chip px-3 py-1.5 rounded-full bg-surface-container text-on-surface-variant border border-outline-variant font-label-sm text-label-sm hover:bg-surface-container-high transition-colors"
+                    data-product="Ambrane Type-C">Ambrane Type-C</button>
+                <button
+                    class="sample-chip px-3 py-1.5 rounded-full bg-surface-container text-on-surface-variant border border-outline-variant font-label-sm text-label-sm hover:bg-surface-container-high transition-colors"
+                    data-product="Samsung Charger">Samsung Charger</button>
+            </div>
+        </section>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="hidden py-12 flex flex-col items-center justify-center text-center">
+            <div
+                class="inline-block w-12 h-12 border-4 border-primary-container/30 border-t-primary-container rounded-full animate-spin mb-4">
+            </div>
+            <p class="font-body-md text-on-surface-variant">Computing similarity scores in high-dimensional space...</p>
+        </div>
+
+        <!-- Main Content Area: Selected Product & Tiers -->
+        <div id="dashboardContent" class="grid grid-cols-12 gap-gutter hidden">
+            <!-- Left Column: Selected Product & Metrics -->
+            <div class="col-span-12 lg:col-span-4 flex flex-col gap-gutter">
+                <!-- Section 3 (Selected Product) -->
+                <div id="selectedProductPanel"
+                    class="bg-surface-container-lowest rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.03)] border border-primary-container/20 overflow-hidden ring-1 ring-primary-container/10">
+                    <div
+                        class="bg-gradient-to-r from-primary-container/10 to-transparent p-md border-b border-outline-variant">
+                        <h2 class="font-h4 text-h4 text-on-surface flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary-container text-[20px]">target</span>
+                            Target Product
+                        </h2>
+                    </div>
+                    <div class="p-lg" id="selectedProductContent">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+
+                <!-- Section 6 (Metrics & Score Chart) -->
+                <div
+                    class="bg-surface-container-lowest rounded-xl p-lg shadow-[0px_4px_20px_rgba(0,0,0,0.03)] border border-outline-variant">
+                    <h3 class="font-h4 text-h4 text-on-surface mb-md">Model Metrics</h3>
+                    <div class="flex items-center justify-center mb-lg">
+                        <!-- Circular Progress -->
+                        <div class="relative w-32 h-32 flex items-center justify-center rounded-full bg-surface-container"
+                            id="precisionRing"
+                            style="background: conic-gradient(#B91C1C 0deg, #e4e1ee 0deg)">
+                            <div
+                                class="absolute inset-[8px] rounded-full bg-surface-container-lowest flex items-center justify-center flex-col z-10">
+                                <span class="block font-h2 text-h2 text-on-surface" id="precisionValue">0%</span>
+                                <span class="block font-label-sm text-label-sm text-on-surface-variant">Precision</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 class="font-h4 text-h4 text-on-surface mb-md mt-lg border-t border-outline-variant pt-md">
+                        Similarity Distribution</h3>
+                    <div class="w-full relative h-48 mt-sm bg-surface-container-lowest flex flex-col justify-end"
+                        id="scoreChart">
+                        <!-- Bars injected via JS -->
+                        <div class="absolute w-full border-t border-dashed border-[#166534]/50 z-10"
+                            style="bottom: 50%;">
+                            <span class="absolute right-0 -top-5 text-xs text-[#166534]">0.50</span>
+                        </div>
+                        <div class="absolute w-full border-t border-dashed border-[#B45309]/50 z-10"
+                            style="bottom: 15%;">
+                            <span class="absolute right-0 -top-5 text-xs text-[#B45309]">0.15</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Tiers -->
+            <div class="col-span-12 lg:col-span-8 flex flex-col gap-lg">
+                <div class="flex justify-between items-end mb-sm">
+                    <div>
+                        <h2 class="font-h3 text-h3 text-on-surface">Recommendations</h2>
+                        <p class="font-body-sm text-body-sm text-on-surface-variant">Ranked by cosine similarity score
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Tier 1 -->
+                <div class="bg-[#F0FDF4] rounded-xl p-md border border-[#86EFAC]/30">
+                    <div class="flex items-center gap-sm mb-md">
+                        <span class="material-symbols-outlined text-[#166534]">check_circle</span>
+                        <h3 class="font-h4 text-h4 text-[#166534]">Tier 1: High Relevance</h3>
+                        <span
+                            class="ml-auto bg-[#DCFCE7] text-[#166534] px-2 py-1 rounded font-label-sm text-label-sm">Scores
+                            > 0.70</span>
+                    </div>
+                    <div class="space-y-sm" id="highTierResults">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+
+                <!-- Tier 2 -->
+                <div class="bg-[#FFFBEB] rounded-xl p-md border border-[#FDE68A]/50">
+                    <div class="flex items-center gap-sm mb-md">
+                        <span class="material-symbols-outlined text-[#B45309]">trending_up</span>
+                        <h3 class="font-h4 text-h4 text-[#B45309]">Tier 2: Medium Relevance</h3>
+                        <span
+                            class="ml-auto bg-[#FEF3C7] text-[#B45309] px-2 py-1 rounded font-label-sm text-label-sm">Scores
+                            0.30 - 0.70</span>
+                    </div>
+                    <div class="space-y-sm" id="mediumTierResults">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+
+                <!-- Tier 3 -->
+                <div class="bg-[#FFF5F5] rounded-xl p-md border border-[#FECACA]/50">
+                    <div class="flex items-center gap-sm mb-md">
+                        <span class="material-symbols-outlined text-[#B91C1C]">info</span>
+                        <h3 class="font-h4 text-h4 text-[#B91C1C]">Tier 3: Low / Cross-sell</h3>
+                        <span
+                            class="ml-auto bg-[#FEE2E2] text-[#B91C1C] px-2 py-1 rounded font-label-sm text-label-sm">Scores
+                            < 0.30</span>
+                    </div>
+                    <div class="space-y-sm" id="lowTierResults">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section: How It Works / Pipeline (Recreated in Tailwind) -->
+            <section
+                class="col-span-12 pipeline-section bg-surface-container-lowest rounded-xl p-lg shadow-[0px_4px_20px_rgba(0,0,0,0.03)] border border-outline-variant mt-md">
+                <h3 class="font-h4 text-h4 text-on-surface mb-md flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary-container">account_tree</span>
+                    Recommendation Pipeline
+                </h3>
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4 py-8 relative">
+                    <!-- Connector Line -->
+                    <div class="absolute hidden md:block top-1/2 left-[10%] right-[10%] h-1 bg-surface-container -z-0">
+                    </div>
+
+                    <div
+                        class="pipeline-step bg-surface-bright border border-outline-variant p-4 rounded-xl flex flex-col items-center text-center w-48 relative z-10 transition-all duration-500 hover:border-primary-container hover:shadow-md bg-white">
+                        <div
+                            class="w-12 h-12 rounded-full bg-primary-container/10 flex items-center justify-center mb-3">
+                            <span class="material-symbols-outlined text-primary-container">database</span>
+                        </div>
+                        <h4 class="font-label-md text-on-surface mb-1">1. Load Dataset</h4>
+                        <p class="font-label-sm text-on-surface-variant">Clean & preprocess Amazon data</p>
+                    </div>
+
+                    <div
+                        class="pipeline-step bg-surface-bright border border-outline-variant p-4 rounded-xl flex flex-col items-center text-center w-48 relative z-10 transition-all duration-500 hover:border-primary-container hover:shadow-md bg-white">
+                        <div
+                            class="w-12 h-12 rounded-full bg-primary-container/10 flex items-center justify-center mb-3">
+                            <span class="material-symbols-outlined text-primary-container">language</span>
+                        </div>
+                        <h4 class="font-label-md text-on-surface mb-1">2. TF-IDF</h4>
+                        <p class="font-label-sm text-on-surface-variant">Text vectorization</p>
+                    </div>
+
+                    <div
+                        class="pipeline-step bg-surface-bright border border-outline-variant p-4 rounded-xl flex flex-col items-center text-center w-48 relative z-10 transition-all duration-500 hover:border-primary-container hover:shadow-md bg-white">
+                        <div
+                            class="w-12 h-12 rounded-full bg-primary-container/10 flex items-center justify-center mb-3">
+                            <span class="material-symbols-outlined text-primary-container">calculate</span>
+                        </div>
+                        <h4 class="font-label-md text-on-surface mb-1">3. Cosine Matrix</h4>
+                        <p class="font-label-sm text-on-surface-variant">Multidimensional similarity</p>
+                    </div>
+
+                    <div
+                        class="pipeline-step bg-surface-bright border border-outline-variant p-4 rounded-xl flex flex-col items-center text-center w-48 relative z-10 transition-all duration-500 hover:border-primary-container hover:shadow-md bg-white">
+                        <div
+                            class="w-12 h-12 rounded-full bg-primary-container/10 flex items-center justify-center mb-3">
+                            <span class="material-symbols-outlined text-primary-container">layers</span>
+                        </div>
+                        <h4 class="font-label-md text-on-surface mb-1">4. Tiered Output</h4>
+                        <p class="font-label-sm text-on-surface-variant">Filter by confidence</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- AI Project Results Dashboard -->
+        <div id="aiDashboardContent" class="hidden flex flex-col gap-lg">
+            <div
+                class="bg-surface-container-lowest rounded-xl p-lg shadow-[0px_4px_20px_rgba(0,0,0,0.03)] border border-primary-container/20">
+                <div class="flex items-center gap-sm mb-md pb-md border-b border-outline-variant">
+                    <span class="material-symbols-outlined text-primary-container text-3xl">construction</span>
+                    <div>
+                        <h2 class="font-h3 text-h3 text-on-surface">Your Project Plan</h2>
+                        <p id="aiGoalTitle" class="font-body-sm text-on-surface-variant italic">Loading...</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-md" id="aiResultsGrid">
+                    <!-- AI Product Cards will be injected here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Campaigns View -->
+        <div id="campaignsView" class="hidden flex flex-col gap-lg">
+            <div
+                class="bg-surface-container-lowest rounded-xl p-lg shadow-[0px_4px_20px_rgba(0,0,0,0.03)] border border-primary-container/20">
+                <h2 class="font-h3 text-h3 text-on-surface mb-md">AI Marketing Campaigns</h2>
+                <p class="font-body-md text-on-surface-variant mb-lg">Generate promotional content for any product.</p>
+
+                <div class="flex flex-col md:flex-row gap-4 mb-lg">
+                    <input id="campaignProductInput"
+                        class="w-full pl-4 pr-4 py-3 rounded-lg border border-outline-variant bg-surface-bright font-body-md text-body-md text-on-surface focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all outline-none"
+                        placeholder="Enter product name (e.g., boAt Airdopes)..." type="text" autocomplete="off" />
+
+                    <select id="campaignTypeSelect"
+                        class="w-full md:w-1/4 px-4 py-3 rounded-lg border border-outline-variant bg-surface-bright font-body-md text-body-md text-on-surface focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all outline-none cursor-pointer">
+                        <option value="email">Email Blast</option>
+                        <option value="social">Social Media Post</option>
+                        <option value="ad">Ad Copy</option>
+                    </select>
+
+                    <button id="generateCampaignBtn"
+                        class="w-full md:w-auto bg-primary-container text-on-primary hover:bg-primary px-6 py-3 rounded-lg font-label-md text-label-md flex items-center justify-center gap-xs shadow-[0px_4px_20px_rgba(0,0,0,0.03)] transition-colors cursor-pointer">
+                        Generate <span class="material-symbols-outlined text-[18px]">magic_button</span>
+                    </button>
+                </div>
+
+                <div id="campaignLoading" class="hidden py-8 flex flex-col items-center justify-center text-center">
+                    <div
+                        class="inline-block w-8 h-8 border-4 border-primary-container/30 border-t-primary-container rounded-full animate-spin mb-4">
+                    </div>
+                    <p class="font-body-md text-on-surface-variant">Writing campaign copy...</p>
+                </div>
+
+                <div id="campaignResult"
+                    class="hidden bg-surface-container-low rounded-lg p-md border border-outline-variant whitespace-pre-wrap font-body-md text-on-surface">
+                </div>
+            </div>
+        </div>
+
+        <!-- Insights View -->
+        <div id="insightsView" class="hidden flex flex-col gap-lg">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+                <div
+                    class="bg-surface-container-lowest rounded-xl p-lg shadow-[0px_4px_20px_rgba(0,0,0,0.03)] border border-outline-variant flex items-center gap-4">
+                    <div class="w-16 h-16 rounded-full bg-primary-container/10 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary-container text-3xl">inventory_2</span>
+                    </div>
+                    <div>
+                        <p class="font-label-sm text-on-surface-variant uppercase tracking-wider">Total Products</p>
+                        <p id="totalProductsStat" class="font-h2 text-h2 text-on-surface">Loading...</p>
+                    </div>
+                </div>
+                <div
+                    class="bg-surface-container-lowest rounded-xl p-lg shadow-[0px_4px_20px_rgba(0,0,0,0.03)] border border-outline-variant flex items-center gap-4">
+                    <div class="w-16 h-16 rounded-full bg-tertiary-container/10 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-tertiary-container text-3xl">category</span>
+                    </div>
+                    <div>
+                        <p class="font-label-sm text-on-surface-variant uppercase tracking-wider">Total Categories</p>
+                        <p id="totalCategoriesStat" class="font-h2 text-h2 text-on-surface">Loading...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="bg-surface-container-lowest rounded-xl p-lg shadow-[0px_4px_20px_rgba(0,0,0,0.03)] border border-outline-variant">
+                <h3 class="font-h4 text-h4 text-on-surface mb-md flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[#B45309]">trending_up</span>
+                    Top Trending Products
+                </h3>
+                <div id="trendingProductsList" class="flex flex-col gap-sm">
+                    <p class="text-on-surface-variant">Loading trending products...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-outline-variant bg-surface-container mt-xxl py-8">
+        <div
+            class="max-w-[1440px] mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-4 text-on-surface-variant">
+            <p class="font-body-sm">Built with Python · scikit-learn · pandas · numpy</p>
+            <div class="flex gap-4">
+                <span class="flex items-center gap-1 font-label-sm"><span
+                        class="material-symbols-outlined text-[16px]">code</span> Source Code</span>
+                <span class="flex items-center gap-1 font-label-sm"><span
+                        class="material-symbols-outlined text-[16px]">shopping_cart</span> Amazon Product Dataset</span>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- AI Builder Modal -->
+    <div id="aiModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+        <!-- Backdrop -->
+        <div id="aiModalBackdrop" class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"></div>
+
+        <!-- Modal Content -->
+        <div
+            class="relative z-10 w-full max-w-2xl bg-surface-container-lowest rounded-2xl shadow-2xl border border-outline-variant overflow-hidden animate-pop-in">
+            <div
+                class="absolute top-0 right-0 w-64 h-64 bg-primary-container/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none">
+            </div>
+
+            <div class="p-6 md:p-8 flex flex-col gap-md">
+                <div class="flex justify-between items-start mb-2">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="flex items-center justify-center w-10 h-10 rounded-full bg-primary-container/10 text-primary-container">
+                            <span class="material-symbols-outlined">auto_awesome</span>
+                        </div>
+                        <div>
+                            <h3 class="font-h3 text-h3 text-on-surface">AI Project Builder</h3>
+                            <p class="font-body-sm text-on-surface-variant">Describe what you want to build or make.</p>
+                        </div>
+                    </div>
+                    <button id="closeAiModalBtn"
+                        class="text-on-surface-variant hover:text-error transition-colors p-1 cursor-pointer rounded-full hover:bg-surface-container-high">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+
+                <div class="flex flex-col gap-4">
+                    <textarea id="aiGoalInput" rows="3"
+                        class="w-full px-4 py-3 rounded-lg border border-primary-container/30 bg-surface-bright font-body-md text-body-md text-on-surface focus:border-primary-container focus:ring-2 focus:ring-primary-container/30 transition-all outline-none resize-none"
+                        placeholder="e.g., I want to build a house, or I want to set up a gaming room..."></textarea>
+                </div>
+
+                <div class="flex justify-end mt-4 pt-4 border-t border-outline-variant">
+                    <button id="aiGoalBtn"
+                        class="w-full md:w-auto bg-gradient-to-r from-primary-container to-primary text-on-primary hover:shadow-lg hover:shadow-primary/20 px-8 py-3 rounded-lg font-label-md text-label-md flex items-center justify-center gap-2 transition-all cursor-pointer">
+                        Generate Recommendations <span class="material-symbols-outlined text-[18px]">magic_button</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="js/script.js?v=1.1"></script>
+
+</body>
+
+</html>

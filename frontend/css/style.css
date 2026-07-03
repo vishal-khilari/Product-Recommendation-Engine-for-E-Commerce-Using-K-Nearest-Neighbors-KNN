@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --- Animations --- */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes pop-in {
+    0% { opacity: 0; transform: scale(0.9); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fade-up {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.animate-pop-in { animation: pop-in 0.8s cubic-bezier(0.1, 0.8, 0.2, 1) forwards; }
+.animate-fade-up { opacity: 0; animation: fade-up 0.8s cubic-bezier(0.1, 0.8, 0.2, 1) forwards; }
+
+.delay-1 { animation-delay: 0.2s; }
+.delay-2 { animation-delay: 0.4s; }
+
+/* Custom variables for script.js */
+:root {
+    --accent-red: #B91C1C;
+    --accent-green: #166534;
+    --accent-gold: #B45309;
+    --card-border: #e4e1ee;
+}

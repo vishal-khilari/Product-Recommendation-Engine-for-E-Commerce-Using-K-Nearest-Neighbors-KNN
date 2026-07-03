@@ -1,0 +1,21 @@
+# Virtual environment
+venv/
+.venv/
+env/
+ENV/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment variables (secrets)
+.env
+.env.*
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Large files / Datasets (GitHub has 100MB file limit)
+amazon_products.csv

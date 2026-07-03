@@ -1,94 +1,96 @@
 # E-Commerce Product Recommendation System
 
-This repository contains a hybrid recommendation system for Amazon products. The system combines collaborative filtering and content-based filtering to provide personalized product recommendations.
+## 1. Project Overview
+The project is a hybrid E-Commerce Product Recommendation System designed to accurately predict and recommend relevant products to a user based on their active browsing or search queries. It operates on a comprehensive Amazon dataset comprising products, prices, ratings, and categories. The backend logic is powered by Python and Flask, seamlessly delivering high-performance, real-time tiered recommendations to a modern frontend interface.
 
-## Table of Contents
+The system leverages Machine Learning techniques to surface:
+- **Substitute Products** (Exact or very similar items)
+- **Complementary Products** (Add-ons in the same ecosystem)
+- **Cross-Sell Items** (Loosely related products in different categories)
 
-1. [Introduction](#introduction)
-2. [Data Cleaning and Transformation](#data-cleaning-and-transformation)
-3. [Collaborative Filtering](#collaborative-filtering)
-4. [Singular Value Decomposition (SVD) for Collaborative Filtering](#singular-value-decomposition-svd-for-collaborative-filtering)
-5. [Generate Collaborative Filtering Recommendations](#generate-collaborative-filtering-recommendations)
-6. [Content-Based Filtering](#content-based-filtering)
-7. [Hybrid Recommendation System](#hybrid-recommendation-system)
-8. [Real-Time Recommendations](#real-time-recommendations)
-9. [Evaluation](#evaluation)
-10. [Usage](#usage)
-11. [Dependencies](#dependencies)
+Additionally, it integrates a Generative AI feature (via Google Gemini) that functions as an "AI Project Builder", which listens to natural language goals (e.g., "Build a gaming PC") and recommends a cart of required products.
 
-## Introduction
+## 2. Features
+- **Hybrid Recommendation Engine:** Combines Content-Based Filtering (TF-IDF) and Collaborative/Behavioral Scoring (SVD).
+- **Tiered Recommendations:** Categorizes recommendations into High Tier (Immediate Need), Medium Tier (Useful Add-ons), and Low Tier (General/Cross-Sell).
+- **AI Project Builder:** Generates a list of recommended items based on a natural language project goal using the Gemini API.
+- **Modern User Interface:** A responsive, dark luxury aesthetic frontend built with HTML, CSS, and JavaScript.
+- **Real-Time Performance:** Flask API processes requests and returns data efficiently.
 
-This recommendation system leverages both collaborative filtering and content-based filtering techniques to provide users with personalized product recommendations. The collaborative filtering component uses user-item interaction data, while the content-based filtering component uses product features to make recommendations.
+## 3. Project Structure
+- `app.py`: The main Flask backend application that handles the API routes (`/api/categories`, `/api/recommend`, `/api/project_recommend`).
+- `Product_Recommendation_System.py` / `Product_Recommendation_System.ipynb`: Initial ML research, data cleaning, and modeling scripts.
+- `frontend/`: Contains the user interface (HTML, CSS, JS).
+- `amazon_products.csv` & `amazon_categories.csv`: The datasets used for generating recommendations.
+- `requirements.txt`: Python dependencies.
 
-## Data Cleaning and Transformation
+## 4. Detailed Implementation
 
-The dataset is first cleaned by removing duplicates and handling missing values. Text fields are standardized by converting to lowercase and removing extra spaces.
+### Data Processing & Feature Engineering
+- **Cleaning:** The dataset is stripped of duplicates and normalized (lowercase strings, handling missing values).
+- **Textual Features:** The product title and category names are combined into a single feature set for TF-IDF.
+- **Behavioral Vectors:** Generates a synthetic user interaction matrix using Singular Value Decomposition (SVD) to group products into behavioral clusters based on root categories and popularity.
 
-## Collaborative Filtering
+### Recommendation Engine Architecture (KNN Paradigm)
+While using matrix dot products for performance, the logic implements an optimized **K-Nearest Neighbors (KNN)** approach using **Cosine Similarity**:
+1. **Map Feature Space:** Products are mapped into a multi-dimensional space using TF-IDF (textual) and SVD (behavioral) coordinates.
+2. **Calculate Distance:** Cosine Similarity determines the angle/distance between the target (anchor) product and others.
+3. **Sort Neighbors:** Sorts products to retrieve the top similar candidates.
+4. **Rule-Based Tiering:** Classifies the nearest neighbors into High, Medium, or Low tiers based on similarity scores, price, category, and title length.
 
-A User-Item Interaction Matrix is created based on implicit feedback (browsing history or purchase interactions). Interactions are treated as binary values.
+## 5. Installation
 
-## Singular Value Decomposition (SVD) for Collaborative Filtering
+### Prerequisites
+- Python 3.8 or higher
+- Modern Web Browser
 
-Singular Value Decomposition (SVD) is applied to factorize the interaction matrix and generate user-product recommendations based on similarity.
+### Setup Steps
+1. **Clone or Download the Repository:**
+   Navigate to the project directory in your terminal.
 
-## Generate Collaborative Filtering Recommendations
+2. **Create a Virtual Environment (Recommended):**
+   ```bash
+   python -m venv venv
+   ```
+   - On Windows: `venv\Scripts\activate`
+   - On macOS/Linux: `source venv/bin/activate`
 
-Recommendations are generated based on the similarity between users.
+3. **Install Dependencies:**
+   Install the required Python packages using pip:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-## Content-Based Filtering
+4. **Environment Variables (For AI Project Builder):**
+   To use the Gemini AI Project Builder feature, you need a Google Gemini API Key.
+   - Create a `.env` file in the root directory.
+   - Add your API key:
+     ```env
+     GEMINI_API_KEY=your_gemini_api_key_here
+     ```
 
-Content-Based Filtering is implemented using TF-IDF vectorization. The `combined_features` column (which includes both category and about_product) is used to compute the similarity between products.
+## 6. How to Run the Project
 
-## Hybrid Recommendation System
+1. **Start the Backend Server:**
+   Run the Flask application from the root directory:
+   ```bash
+   python app.py
+   ```
+   The backend API will start on `http://127.0.0.1:5000` (or `http://localhost:5000`). Wait until you see `Initialization complete! API is ready.` in the console.
 
-The hybrid recommendation system combines both collaborative and content-based recommendations.
+2. **Launch the Frontend:**
+   - Open the `frontend` directory.
+   - You can simply double-click the `index.html` file to open it in your web browser.
+   - Alternatively, you can use a local web server extension (like Live Server in VS Code) to serve the `frontend` folder for a better development experience.
 
-## Real-Time Recommendations
+3. **Using the Application:**
+   - Use the search bar to find products by name or category.
+   - Browse the categories dropdown.
+   - Click on the "AI Builder" in the navigation bar to try the Gemini generative recommendations.
+   - Click on any product to see its tiered recommendations.
 
-For real-time updates, you can simulate real-time browsing or interaction and immediately generate recommendations based on the recent activity.
-
-## Evaluation
-
-The recommendation system can be evaluated using Precision, Recall, or Mean Average Precision (MAP) by comparing the generated recommendations with actual user preferences.
-
-## Usage
-
-To use the recommendation system, follow these steps:
-
-1. Load the dataset and clean the data.
-2. Create the User-Item Interaction Matrix.
-3. Apply SVD for dimensionality reduction.
-4. Generate collaborative filtering recommendations.
-5. Implement content-based filtering using TF-IDF vectorization.
-6. Combine collaborative and content-based recommendations to form a hybrid recommendation system.
-7. Generate real-time recommendations based on recent user activity.
-8. Evaluate the recommendation system using appropriate metrics.
-
-## Dependencies
-
-The following Python libraries are required:
-
-- pandas
-- numpy
-- scikit-learn
-
-You can install these dependencies using pip:
-
-```sh
-pip install pandas numpy scikit-learn
-```
-
-To install the dependencies listed in the `requirements.txt` file, you can use the following command:
-
-```sh
-pip install -r requirements.txt
-```
-
-## License
-
+## 7. License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-## Disclaimer
-
-⚠️ This project is solely for educational purposes to acquire knowledge about Collaborative Filtering and Singular Value Decomposition (SVD) for Collaborative Filtering.
+## 8. Disclaimer
+This project is solely for educational purposes to demonstrate advanced recommendation algorithms, Machine Learning workflows, and full-stack web integration.
