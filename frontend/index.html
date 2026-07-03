@@ -499,6 +499,44 @@
         </div>
     </div>
 
+    <!-- Backend Connection / Dataset Alert Modal -->
+    <div id="connectionAlertModal" class="fixed inset-0 z-[110] hidden flex items-center justify-center p-4">
+        <!-- Backdrop -->
+        <div id="connectionAlertModalBackdrop" class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity"></div>
+
+        <!-- Modal Content -->
+        <div class="relative z-10 w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-red-200 dark:border-red-900/50 overflow-hidden animate-pop-in p-6">
+            <div class="flex flex-col items-center text-center gap-md">
+                <div class="w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/20 text-red-600 flex items-center justify-center mb-2">
+                    <span class="material-symbols-outlined text-[36px]">database_off</span>
+                </div>
+                
+                <h3 class="font-h3 text-h3 text-on-surface">Data Connection Unresolved</h3>
+                
+                <p class="font-body-md text-on-surface-variant text-sm">
+                    The recommendation dashboard could not communicate with the backend API. When hosting online (such as on Vercel), the local dataset is not present.
+                </p>
+
+                <div class="bg-surface-container-low rounded-lg p-md text-left w-full border border-outline-variant space-y-sm text-xs font-body-sm text-on-surface-variant">
+                    <p class="font-semibold text-on-surface flex items-center gap-1">
+                        <span class="material-symbols-outlined text-sm text-primary">terminal</span> How to fix:
+                    </p>
+                    <ol class="list-decimal pl-4 space-y-1">
+                        <li>Ensure you have run <code class="bg-surface-container px-1 py-0.5 rounded text-primary">python app.py</code> locally on port 5000.</li>
+                        <li>Verify the datasets <code class="bg-surface-container px-1 py-0.5 rounded">amazon_products.csv</code> and <code class="bg-surface-container px-1 py-0.5 rounded">amazon_categories.csv</code> are placed in the project root.</li>
+                        <li>If accessing from HTTPS (like Vercel), your browser may block localhost requests. Disable the browser block or host the backend on a public server.</li>
+                    </ol>
+                </div>
+
+                <div id="connectionErrorDetail" class="text-xs text-red-500 font-mono w-full break-all hidden"></div>
+
+                <button id="closeConnectionAlertBtn" class="w-full bg-primary-container text-on-primary hover:bg-primary py-3 rounded-lg font-label-md text-label-md transition-colors cursor-pointer mt-2">
+                    Acknowledge
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script src="js/script.js?v=1.1"></script>

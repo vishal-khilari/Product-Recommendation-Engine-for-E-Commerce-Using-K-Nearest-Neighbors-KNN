@@ -1,6 +1,14 @@
 // --- Configuration & Initialization ---
 let datasetLoaded = true; // API is always ready
 
+function getApiBaseUrl() {
+    const hostname = window.location.hostname;
+    // If we are running on a local development server (like localhost or 127.0.0.1), use it.
+    // Otherwise (like when hosted on Vercel), the Flask backend runs on localhost (127.0.0.1).
+    const isLocal = hostname === 'localhost' || hostname === '127.0.0.1' || hostname.startsWith('192.168.') || hostname === '';
+    return isLocal ? `http://${hostname}:5000` : `http://127.0.0.1:5000`;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     initPipelineObserver();
     fetchCategories();
@@ -106,8 +114,7 @@ if (openAiModalBtn && aiModal && closeAiModalBtn && aiModalBackdrop) {
 
 // --- Core UI Logic ---
 function fetchCategories() {
-    const hostname = window.location.hostname || '127.0.0.1';
-    fetch(`http://${hostname}:5000/api/categories`)
+    fetch(`${getApiBaseUrl()}/api/categories`)
         .then(res => res.json())
         .then(data => {
             if (Array.isArray(data)) {
@@ -119,7 +126,10 @@ function fetchCategories() {
                 });
             }
         })
-        .catch(err => console.error("Failed to load categories:", err));
+        .catch(err => {
+            console.error("Failed to load categories:", err);
+            showConnectionAlert(err.message);
+        });
 }
 
 function triggerSearch(query, asin = null, categoryId = null) {
@@ -133,8 +143,7 @@ function triggerSearch(query, asin = null, categoryId = null) {
     loadingState.classList.remove('hidden');
     loadingState.querySelector('p').textContent = "Computing similarity scores in high-dimensional space...";
 
-    const hostname = window.location.hostname || '127.0.0.1';
-    let apiUrl = `http://${hostname}:5000/api/recommend?`;
+    let apiUrl = `${getApiBaseUrl()}/api/recommend?`;
     
     let params = new URLSearchParams();
     if (query) params.append('q', query);
@@ -182,7 +191,7 @@ function triggerSearch(query, asin = null, categoryId = null) {
         })
         .catch(error => {
             console.error(error);
-            alert("Search Failed: " + error.message);
+            showConnectionAlert(error.message);
             loadingState.classList.add('hidden');
         });
 }
@@ -354,8 +363,7 @@ function triggerAIProject(goal, apiKey) {
     loadingState.classList.remove('hidden');
     loadingState.querySelector('p').textContent = "Consulting Gemini AI and matching products...";
 
-    const hostname = window.location.hostname || '127.0.0.1';
-    const apiUrl = `http://${hostname}:5000/api/project_recommend`;
+    const apiUrl = `${getApiBaseUrl()}/api/project_recommend`;
 
     fetch(apiUrl, {
         method: 'POST',
@@ -376,7 +384,7 @@ function triggerAIProject(goal, apiKey) {
     })
     .catch(error => {
         console.error(error);
-        alert("AI Request Failed: " + error.message);
+        showConnectionAlert(error.message);
         loadingState.classList.add('hidden');
     });
 }
@@ -522,8 +530,7 @@ function loadInsights() {
     totalCategoriesStat.textContent = 'Loading...';
     trendingProductsList.innerHTML = '<p class="text-on-surface-variant">Fetching trending data...</p>';
 
-    const hostname = window.location.hostname || '127.0.0.1';
-    fetch(`http://${hostname}:5000/api/insights`)
+    fetch(`${getApiBaseUrl()}/api/insights`)
         .then(res => res.json())
         .then(data => {
             totalProductsStat.textContent = data.total_products.toLocaleString();
@@ -552,6 +559,7 @@ function loadInsights() {
             totalProductsStat.textContent = 'Error';
             totalCategoriesStat.textContent = 'Error';
             trendingProductsList.innerHTML = '<p class="text-error">Failed to load insights.</p>';
+            showConnectionAlert(err.message);
         });
 }
 
@@ -572,8 +580,7 @@ if (generateCampaignBtn) {
         campaignResult.classList.add('hidden');
         campaignLoading.classList.remove('hidden');
         
-        const hostname = window.location.hostname || '127.0.0.1';
-        fetch(`http://${hostname}:5000/api/generate_campaign`, {
+        fetch(`${getApiBaseUrl()}/api/generate_campaign`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ product_name: productName, type: type })
@@ -592,7 +599,34 @@ if (generateCampaignBtn) {
             campaignLoading.classList.add('hidden');
             campaignResult.innerHTML = `<span class="text-error">Failed to connect to API.</span>`;
             campaignResult.classList.remove('hidden');
+            showConnectionAlert(err.message);
         });
     });
+}
+
+// --- Connection Alert Modal Logic ---
+const connectionAlertModal = document.getElementById('connectionAlertModal');
+const connectionAlertModalBackdrop = document.getElementById('connectionAlertModalBackdrop');
+const closeConnectionAlertBtn = document.getElementById('closeConnectionAlertBtn');
+const connectionErrorDetail = document.getElementById('connectionErrorDetail');
+
+function showConnectionAlert(errorMsg = '') {
+    if (connectionAlertModal) {
+        if (errorMsg) {
+            connectionErrorDetail.textContent = `Details: ${errorMsg}`;
+            connectionErrorDetail.classList.remove('hidden');
+        } else {
+            connectionErrorDetail.classList.add('hidden');
+        }
+        connectionAlertModal.classList.remove('hidden');
+    }
+}
+
+if (closeConnectionAlertBtn && connectionAlertModal) {
+    const hideAlert = () => connectionAlertModal.classList.add('hidden');
+    closeConnectionAlertBtn.addEventListener('click', hideAlert);
+    if (connectionAlertModalBackdrop) {
+        connectionAlertModalBackdrop.addEventListener('click', hideAlert);
+    }
 }
 
